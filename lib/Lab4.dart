@@ -5,18 +5,20 @@ void main() {
 }
 
 // ==========================================
-// EXERCISE 4: Quản lý App Structure & Theme
+// BÀI 4: KHUNG ỨNG DỤNG (APP STRUCTURE) & THEME
 // ==========================================
 class Lab4App extends StatefulWidget {
   const Lab4App({super.key});
+
   @override
   State<Lab4App> createState() => _Lab4AppState();
 }
 
 class _Lab4AppState extends State<Lab4App> {
-  // Trạng thái điều khiển chế độ Sáng/Tối
+  // Biến quản lý trạng thái Sáng/Tối
   ThemeMode _themeMode = ThemeMode.light;
 
+  // Hàm chuyển đổi theme
   void toggleTheme(bool isDark) {
     setState(() {
       _themeMode = isDark ? ThemeMode.dark : ThemeMode.light;
@@ -28,15 +30,17 @@ class _Lab4AppState extends State<Lab4App> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Lab 4 - Flutter UI',
+      // Cấu hình Theme Sáng / Tối
       theme: ThemeData(primarySwatch: Colors.blue, brightness: Brightness.light),
-      darkTheme: ThemeData(brightness: Brightness.dark),
-      themeMode: _themeMode, // Áp dụng giao diện dựa trên biến trạng thái
+      darkTheme: ThemeData(brightness: Brightness.dark, primarySwatch: Colors.deepPurple),
+      themeMode: _themeMode,
+      // Gọi màn hình chính và truyền hàm toggleTheme vào
       home: MainHomeScreen(toggleTheme: toggleTheme, isDark: _themeMode == ThemeMode.dark),
     );
   }
 }
 
-// Khung màn hình chính chứa Scaffold, AppBar, FAB và BottomNavigationBar
+// Màn hình chính chứa Scaffold, AppBar, FAB và Điều hướng
 class MainHomeScreen extends StatefulWidget {
   final Function(bool) toggleTheme;
   final bool isDark;
@@ -48,9 +52,9 @@ class MainHomeScreen extends StatefulWidget {
 }
 
 class _MainHomeScreenState extends State<MainHomeScreen> {
-  int _currentIndex = 0;
+  int _currentIndex = 0; // Đang ở Tab nào?
 
-  // Danh sách các màn hình đại diện cho từng bài tập
+  // Danh sách các màn hình bài tập
   final List<Widget> _screens = [
     const Ex1CoreWidgets(),
     const Ex2InputWidgets(),
@@ -59,6 +63,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Scaffold: Khung xương chuẩn của màn hình
     return Scaffold(
       appBar: AppBar(
         title: const Text('Lab 4 - UI Fundamentals'),
@@ -66,47 +71,52 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
           Row(
             children: [
               const Text('Dark Mode', style: TextStyle(fontSize: 12)),
-              // Nút bật tắt chế độ tối
               Switch(
                 value: widget.isDark,
-                onChanged: (val) => widget.toggleTheme(val),
+                onChanged: (val) => widget.toggleTheme(val), // Gọi hàm bật/tắt Theme
               ),
             ],
           )
         ],
       ),
-      body: _screens[_currentIndex], // Hiển thị nội dung tùy theo tab đang chọn
+      // BÀI 5: Sửa lỗi State - Dùng _screens[_currentIndex] để tự động đổi màn hình khi ấn Tab
+      body: _screens[_currentIndex],
+
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Floating Action Button Clicked!')),
+            const SnackBar(content: Text('Nút FAB đã được bấm!')),
           );
         },
         child: const Icon(Icons.add),
       ),
+
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
-          // EXERCISE 5: Sửa lỗi State bằng cách dùng setState để tab cập nhật
-          setState(() { _currentIndex = index; });
+          setState(() {
+            _currentIndex = index; // Cập nhật Tab đang chọn
+          });
         },
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.widgets), label: 'Ex 1 (Core)'),
-          BottomNavigationBarItem(icon: Icon(Icons.input), label: 'Ex 2 (Input)'),
-          BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Ex 3 (Layout)'),
+          BottomNavigationBarItem(icon: Icon(Icons.widgets), label: 'Bài 1 (Core)'),
+          BottomNavigationBarItem(icon: Icon(Icons.input), label: 'Bài 2 (Input)'),
+          BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Bài 3 (Layout)'),
         ],
       ),
     );
   }
 }
 
-// EXERCISE 1: Core Widgets (Text, Image, Icon, Card)
+// ==========================================
+// BÀI 1: CORE WIDGETS
+// ==========================================
 class Ex1CoreWidgets extends StatelessWidget {
   const Ex1CoreWidgets({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // EXERCISE 5: Fix overflow bằng SingleChildScrollView để màn hình cuộn được
+    // BÀI 5: Bọc SingleChildScrollView để fix lỗi tràn màn hình (Overflow)
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -114,8 +124,10 @@ class Ex1CoreWidgets extends StatelessWidget {
         children: [
           const Text('Welcome to Flutter UI', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
           const SizedBox(height: 20),
+
           const Center(child: Icon(Icons.movie, size: 64, color: Colors.blue)),
           const SizedBox(height: 20),
+
           Image.network(
             'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg',
             height: 200,
@@ -123,6 +135,7 @@ class Ex1CoreWidgets extends StatelessWidget {
             fit: BoxFit.cover,
           ),
           const SizedBox(height: 20),
+
           const Card(
             elevation: 4,
             child: ListTile(
@@ -138,10 +151,11 @@ class Ex1CoreWidgets extends StatelessWidget {
 }
 
 // ==========================================
-// EXERCISE 2: Input Widgets (Slider, Switch, Radio)
+// BÀI 2: INPUT WIDGETS
 // ==========================================
 class Ex2InputWidgets extends StatefulWidget {
   const Ex2InputWidgets({super.key});
+
   @override
   State<Ex2InputWidgets> createState() => _Ex2InputWidgetsState();
 }
@@ -164,7 +178,7 @@ class _Ex2InputWidgetsState extends State<Ex2InputWidgets> {
             value: _rating,
             min: 0,
             max: 100,
-            // EXERCISE 5: Gọi setState() để thanh trượt cập nhật khi kéo
+            // BÀI 5: Dùng setState() để UI cập nhật ngay khi kéo thanh trượt
             onChanged: (val) => setState(() => _rating = val),
           ),
           Text('Current value: ${_rating.toInt()}'),
@@ -202,7 +216,7 @@ class _Ex2InputWidgetsState extends State<Ex2InputWidgets> {
           Center(
             child: ElevatedButton(
               onPressed: () async {
-                // EXERCISE 5: Fix DatePicker BuildContext Error
+                // BÀI 5: Fix lỗi DatePicker Context bằng cách gọi bên trong Widget tree hợp lệ
                 final DateTime? picked = await showDatePicker(
                   context: context,
                   initialDate: DateTime.now(),
@@ -210,20 +224,20 @@ class _Ex2InputWidgetsState extends State<Ex2InputWidgets> {
                   lastDate: DateTime(2100),
                 );
                 if (picked != null && picked != _selectedDate) {
-                  setState(() {
-                    _selectedDate = picked;
-                  });
+                  setState(() { _selectedDate = picked; });
                 }
               },
               child: const Text('Open Date Picker'),
             ),
           ),
           if (_selectedDate != null)
-            Center(child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text('Selected Date: ${_selectedDate.toString().split(' ')[0]}',
-                  style: const TextStyle(fontSize: 16, color: Colors.blue)),
-            )),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: Text('Selected Date: ${_selectedDate.toString().split(' ')[0]}',
+                    style: const TextStyle(fontSize: 16, color: Colors.blue)),
+              ),
+            ),
         ],
       ),
     );
@@ -231,14 +245,14 @@ class _Ex2InputWidgetsState extends State<Ex2InputWidgets> {
 }
 
 // ==========================================
-// EXERCISE 3 & 5: Layout Basics & Fix ListView
+// BÀI 3: LAYOUT BASICS & BÀI 5: FIX LISTVIEW ERROR
 // ==========================================
 class Ex3LayoutAndListView extends StatelessWidget {
   const Ex3LayoutAndListView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final List<String> movies = ['Avatar', 'Inception', 'Interstellar', 'Joker', 'The Matrix', 'Spider-Man', 'Iron Man'];
+    final List<String> movies = ['Avatar', 'Inception', 'Interstellar', 'Joker', 'The Matrix', 'Spider-Man'];
 
     return Column(
       children: [
@@ -246,8 +260,8 @@ class Ex3LayoutAndListView extends StatelessWidget {
           padding: EdgeInsets.all(16.0),
           child: Text('Now Playing', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
         ),
-        // EXERCISE 5: Sửa lỗi ListView inside Column bằng cách dùng widget Expanded
-        // Nếu bỏ dòng Expanded này đi, toàn bộ ứng dụng sẽ bị màn hình đỏ (Crash)
+
+        // BÀI 5: Dùng Expanded để sửa lỗi Crash màn hình đỏ (Unbounded height) của ListView khi đặt trong Column
         Expanded(
           child: ListView.builder(
             itemCount: movies.length,
@@ -260,7 +274,7 @@ class Ex3LayoutAndListView extends StatelessWidget {
                     child: Text(movies[index][0], style: const TextStyle(color: Colors.indigo)),
                   ),
                   title: Text(movies[index]),
-                  subtitle: const Text('Sample movie description'),
+                  subtitle: const Text('Sample description'),
                 ),
               );
             },
